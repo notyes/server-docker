@@ -1,0 +1,26 @@
+app:
+    image: million12/nginx-php:php70
+    container_name: demoDomain-nginx-php7
+    restart: always
+    environment:
+        - VIRTUAL_HOST=www.demoDomain.io,demoDomain.io,*.demoDomain.io
+        - LETSENCRYPT_HOST=www.demoDomain.io,demoDomain.io
+        - LETSENCRYPT_EMAIL=me@acodify.com
+    volumes:
+        - ./public_html/:/data/www/default
+        - ./config/hosts.d/:/etc/nginx/hosts.d/
+        - ./config/11-nginx-dirs.sh:/config/init/11-nginx-dirs.sh
+    links:
+        - db:mysql
+db:
+    image: mariadb:10
+    container_name: mariadb-mysql
+    restart: always
+    environment:
+        - MYSQL_ROOT_PASSWORD=PASSWORD
+        - MYSQL_DATABASE=demoDomain
+        - MYSQL_USER=demoDomain
+        - MYSQL_PASSWORD=PASSWORD
+    volumes:
+      - ./config/data:/var/lib/mysql
+
